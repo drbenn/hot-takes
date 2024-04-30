@@ -3,7 +3,8 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 // import { ChatGptService } from './chat-gpt/chat-gpt.service';
 // import { CronService } from './cron/cron.service';
 // import { HeadlineScrapeService } from './headline-scrape/headline-scrape.service';
-// import { DbService } from './db/db.service';
+import { DbService } from './db/db.service';
+import { ContributorForPrompting } from './app.models';
 // import { NewsStory } from './app.models';
 
 @Injectable()
@@ -12,13 +13,18 @@ export class AppService implements OnModuleInit {
   constructor(
     // private cronService: CronService,
     // private headlineService: HeadlineScrapeService,
-    // private dbService: DbService,
+    private dbService: DbService,
     // private chatGptService: ChatGptService,
   ) {}
 
 
   getHello(): string {
-    return 'Hello World!';
+    return 'Hello World! Hot Takes Cron Server is running!';
+  }
+
+  async getContributors() {
+    const contributors = await this.dbService.getAllContributors()
+    return contributors;
   }
 
   onModuleInit() {

@@ -17,40 +17,19 @@ let CronService = class CronService {
     constructor(workflowService) {
         this.workflowService = workflowService;
     }
-    cron30seconds() {
-        console.log('Cron task executed every 30 sec');
-        console.log(new Date());
+    cron8am() {
         this.workflowService.workflowActive();
     }
     ;
-    cron8am() {
-        console.log('=================================================');
-        console.log('=================================================');
-        console.log('=============   10:00 AM CRON JOB   ==============');
-        console.log(`=============    ${new Date()}     ==============`);
-        console.log('=================================================');
-        console.log('=================================================');
-    }
-    ;
     cron8pm() {
-        console.log('=================================================');
-        console.log('=================================================');
-        console.log('=============   8:00 PM CRON JOB   ==============');
-        console.log(`=============    ${new Date()}     ==============`);
-        console.log('=================================================');
-        console.log('=================================================');
+        this.workflowService.workflowActive();
     }
     ;
 };
 exports.CronService = CronService;
 __decorate([
     (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_30_SECONDS),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], CronService.prototype, "cron30seconds", null);
-__decorate([
-    (0, schedule_1.Cron)('0 10 * * *', {
+    (0, schedule_1.Cron)('0 8 * * *', {
         timeZone: 'America/New_York',
     }),
     __metadata("design:type", Function),
@@ -58,7 +37,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CronService.prototype, "cron8am", null);
 __decorate([
-    (0, schedule_1.Cron)('0 20 * * *', {
+    (0, schedule_1.Cron)('0 18 * * *', {
         timeZone: 'America/New_York',
     }),
     __metadata("design:type", Function),

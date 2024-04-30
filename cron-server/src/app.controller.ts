@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('contributors')
+  async getContributors() {
+    return await this.appService.getContributors();
+  }
 }

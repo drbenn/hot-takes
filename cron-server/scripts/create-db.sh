@@ -4,7 +4,7 @@
 
 echo "|=============== CREATE-DB STARTED ===============|"
 ROOT_PASSWD="pass"
-DB="cron_server_ai_news" # rename to actual_site_db
+DB="hot_takes" # rename to actual_site_db
 
 # Create database
 mysql -u root -p$ROOT_PASSWD -e "CREATE DATABASE $DB;"

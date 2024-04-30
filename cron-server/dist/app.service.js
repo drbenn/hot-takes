@@ -11,10 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
+const db_service_1 = require("./db/db.service");
 let AppService = class AppService {
-    constructor() { }
+    constructor(dbService) {
+        this.dbService = dbService;
+    }
     getHello() {
-        return 'Hello World!';
+        return 'Hello World! Hot Takes Cron Server is running!';
+    }
+    async getContributors() {
+        const contributors = await this.dbService.getAllContributors();
+        return contributors;
     }
     onModuleInit() {
         console.log('Function executed on server start!');
@@ -24,7 +31,7 @@ let AppService = class AppService {
 exports.AppService = AppService;
 exports.AppService = AppService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [db_service_1.DbService])
 ], AppService);
 ;
 //# sourceMappingURL=app.service.js.map

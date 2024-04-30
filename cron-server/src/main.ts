@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
+  app.setGlobalPrefix('hot-takes-cron-server');
   await app.listen(process.env.SERVER_PORT || 3101);
 }
 bootstrap();

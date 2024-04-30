@@ -8,6 +8,7 @@
 .env*
 *.env
 /cron-server/node_modules/
+/cron-server/dist/
 
 # Logs
 logs

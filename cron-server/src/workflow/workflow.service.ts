@@ -6,7 +6,7 @@ import { HeadlineScrapeService } from 'src/headline-scrape/headline-scrape.servi
 
 @Injectable()
 export class WorkflowService {
-  private maxPostDelayHours: number = 0.25/60; // Number of hours the posting cycle should conclude in 
+  private maxPostDelayHours: number = 4; // Number of hours the posting cycle should conclude in 
 
   constructor(
     private dbService: DbService,
@@ -21,9 +21,9 @@ export class WorkflowService {
   async aiPostWorkFlow() {
     // 1. Get listing of contributors from db
     const contributors: ContributorForPrompting[] = await this.dbService.getAllContributors();
-    contributors.pop();
-    contributors.pop();
-    console.log(contributors);
+    // contributors.pop();
+    // contributors.pop();
+    // console.log(contributors);
 
     // 2. Shuffle contributors for randomized posting order
     const shuffledContributors: ContributorForPrompting[] = this.shuffleContributors(contributors);
@@ -39,18 +39,18 @@ export class WorkflowService {
     
     // 5. Assign news headline to each contributor
     const contributorsPromptData: ContributorForPrompting[] = this.assignNewsStoryToContributors(headlines, delayedShuffledContributors);
-    console.log(contributorsPromptData);
+    // console.log(contributorsPromptData);
     
     // 6. Iterate through contributors, for each contributor
       // a. submit appropriate prompt to chatgpt
       // b. with successful response from chatgpt insert new post into table ai_posts
       contributorsPromptData.forEach((contributor: ContributorForPrompting) => {
-      console.log('iterating based on delay...');
+      // console.log('iterating based on delay...');
       
       // timeouts run concurrently, not in sequence, so no need to divide const maxPostDelayHours by # of contributors
       // also cannot await within the timeout, so calling db insert from within gptService after async quote is received.
       setTimeout(() => {
-        console.log(contributor);
+        // console.log(contributor);
         // transmit and await response from chatgpt
         // insert gpt response into db
         this.gptService.generateAiPost(contributor);      

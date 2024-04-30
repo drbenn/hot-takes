@@ -11,35 +11,37 @@ export class CronService {
      * Will run automatically.
      */
     @Cron(CronExpression.EVERY_30_SECONDS)
-    cron30seconds() {
-        // Your business logic here
-        console.log('Cron task executed every 30 sec');
-        console.log(new Date());
-        this.workflowService.workflowActive();
-    };
+    // cron30seconds() {
+    //     // Your business logic here
+    //     console.log('Cron task executed every 30 sec');
+    //     console.log(new Date());
+    //     this.workflowService.workflowActive();
+    // };
     
-    @Cron('0 10 * * *', {
+    @Cron('0 8 * * *', {
         timeZone: 'America/New_York',
     })
     cron8am() {
-        console.log('=================================================');
-        console.log('=================================================');
-        console.log('=============   10:00 AM CRON JOB   ==============');
-        console.log(`=============    ${new Date()}     ==============`);
-        console.log('=================================================');
-        console.log('=================================================');
+        // console.log('=================================================');
+        // console.log('=================================================');
+        // console.log('=============   8:00 AM CRON JOB   ==============');
+        // console.log(`=============    ${new Date()}     ==============`);
+        // console.log('=================================================');
+        // console.log('=================================================');
+        this.workflowService.workflowActive();
     };
 
-    @Cron('0 20 * * *', {
+    @Cron('0 18 * * *', {
         timeZone: 'America/New_York',
     })
     cron8pm() {
-        console.log('=================================================');
-        console.log('=================================================');
-        console.log('=============   8:00 PM CRON JOB   ==============');
-        console.log(`=============    ${new Date()}     ==============`);
-        console.log('=================================================');
-        console.log('=================================================');
+        // console.log('=================================================');
+        // console.log('=================================================');
+        // console.log('=============   8:00 PM CRON JOB   ==============');
+        // console.log(`=============    ${new Date()}     ==============`);
+        // console.log('=================================================');
+        // console.log('=================================================');
+        this.workflowService.workflowActive();
     };
     // @Cron('32 17 * * *', {
     //     timeZone: 'America/New_York',
