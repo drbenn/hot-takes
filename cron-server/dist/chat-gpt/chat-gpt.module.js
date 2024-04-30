@@ -10,13 +10,15 @@ exports.ChatGptModule = void 0;
 const common_1 = require("@nestjs/common");
 const chat_gpt_service_1 = require("./chat-gpt.service");
 const axios_1 = require("@nestjs/axios");
+const db_module_1 = require("../db/db.module");
+const db_service_1 = require("../db/db.service");
 let ChatGptModule = class ChatGptModule {
 };
 exports.ChatGptModule = ChatGptModule;
 exports.ChatGptModule = ChatGptModule = __decorate([
     (0, common_1.Module)({
-        imports: [axios_1.HttpModule],
-        providers: [chat_gpt_service_1.ChatGptService],
+        imports: [axios_1.HttpModule, db_module_1.DbModule],
+        providers: [chat_gpt_service_1.ChatGptService, db_service_1.DbService],
         exports: [chat_gpt_service_1.ChatGptService],
     })
 ], ChatGptModule);

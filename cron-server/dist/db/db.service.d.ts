@@ -3,12 +3,6 @@ import { ContributorForPrompting } from 'src/app.models';
 export declare class DbService {
     private readonly connection;
     constructor(connection: Connection);
-    insertPost({ contributor_id, headline, content_snippet, link, post }: {
-        contributor_id: any;
-        headline: any;
-        content_snippet: any;
-        link: any;
-        post: any;
-    }): Promise<void>;
+    insertPost(contributor: ContributorForPrompting, post: string): Promise<any>;
     getAllContributors(): Promise<ContributorForPrompting[]>;
 }

@@ -19,7 +19,7 @@ let WorkflowService = class WorkflowService {
         this.dbService = dbService;
         this.headlineService = headlineService;
         this.gptService = gptService;
-        this.maxPostDelayHours = 6;
+        this.maxPostDelayHours = 0.25 / 60;
     }
     async workflowActive() {
         console.log('WorkFlow Touched!');
@@ -28,11 +28,21 @@ let WorkflowService = class WorkflowService {
     ;
     async aiPostWorkFlow() {
         const contributors = await this.dbService.getAllContributors();
+        contributors.pop();
+        contributors.pop();
+        console.log(contributors);
         const shuffledContributors = this.shuffleContributors(contributors);
         const delayedShuffledContributors = this.addDelayForContributorPosting(shuffledContributors);
         const headlines = await this.headlineService.getLatestHeadlines();
         const contributorsPromptData = this.assignNewsStoryToContributors(headlines, delayedShuffledContributors);
         console.log(contributorsPromptData);
+        contributorsPromptData.forEach((contributor) => {
+            console.log('iterating based on delay...');
+            setTimeout(() => {
+                console.log(contributor);
+                this.gptService.generateAiPost(contributor);
+            }, contributor.ms_post_delay);
+        });
     }
     shuffleContributors(contributors) {
         for (let i = contributors.length - 1; i > 0; i--) {
@@ -57,7 +67,8 @@ let WorkflowService = class WorkflowService {
     }
     ;
     assignNewsStoryToContributors(headlines, delayedShuffledContributors) {
-        const assignedHeadlines = delayedShuffledContributors.map((contributor) => {
+        const assignedHeadlines = delayedShuffledContributors
+            .map((contributor) => {
             return Object.assign(Object.assign({}, contributor), { newsStory: headlines[Math.floor(Math.random() * headlines.length)] });
         });
         return assignedHeadlines;

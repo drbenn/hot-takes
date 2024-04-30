@@ -19,34 +19,33 @@ let DbService = class DbService {
     constructor(connection) {
         this.connection = connection;
     }
-    async insertPost({ contributor_id, headline, content_snippet, link, post }) {
-        console.log(contributor_id, headline, content_snippet, link, post);
+    async insertPost(contributor, post) {
         const sqlQuery = `INSERT INTO ai_posts (contributor_id, headline, content_snippet, link, post) 
       VALUES (
-        \'${contributor_id}\',
-        \'${headline}\',
-        \'${content_snippet}\',
-        \'${link}\',
+        \'${contributor.contributor_id}\',
+        \'${contributor.newsStory.title}\',
+        \'${contributor.newsStory.contentSnippet}\',
+        \'${contributor.newsStory.link}\',
         \'${post}\'
       )`;
         const response = await this.connection.query(sqlQuery);
         const results = Object.assign([{}], response[0]);
         if (results.serverStatus === 2) {
             console.log(`AI Post Insert Successful for:\n
-      contributor ID: ${contributor_id}, \n
-      headline: ${headline}, \n
+      contributor ID: ${contributor.contributor_id}, \n
+      headline: ${contributor.newsStory.title}, \n
       post: ${post}  \n
       `);
         }
         else {
             console.error(`Error Inserting AI Post! Insert failed for post details:\n
-      contributor ID: ${contributor_id}, \n
-      headline: ${headline}, \n
+      contributor ID: ${contributor.contributor_id}, \n
+      headline: ${contributor.newsStory.title}, \n
       post: ${post}  \n
       `);
             throw new Error(`Error Inserting AI Post! Insert failed for post details:\n
-        contributor ID: ${contributor_id}, \n
-        headline: ${headline}, \n
+        contributor ID: ${contributor.contributor_id}, \n
+        headline: ${contributor.newsStory.title}, \n
         post: ${post}  \n
       `);
         }
