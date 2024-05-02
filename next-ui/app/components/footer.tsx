@@ -1,3 +1,6 @@
+import Link from "next/link";
+
+
 
 export default function Footer() {
   return (
@@ -10,8 +13,9 @@ export default function Footer() {
 
     </footer> */}
     <footer className="bg-gray-200 h-40 w-full text-center p-4">
-      <p>Copyright &copy; {new Date().getFullYear()}</p>
-      <p>Some more footer content here.</p>
+      <p className="text-2xl pt-8 pb-4">Hot Takes</p>
+      <p><Link href="https://danbennett.dev">danbennett.dev</Link></p>
+      <p className="text-xs">Copyright &copy; {new Date().getFullYear()}</p>
     </footer>
     </>
   )

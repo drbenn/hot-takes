@@ -13,6 +13,30 @@ import mysql from 'mysql2/promise';
 //     queueLimit: 0
 //   };
 
+export const getAllContributors = async () => {
+    try {
+        const db = await mysql.createConnection({
+            host: 'localhost',
+            port: '3306',
+            user: 'root',  // Replace with your MySQL username
+            password: 'pass',  // Replace with your MySQL password
+            database: 'hot_takes',  // Replace with your database name
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+          });
+        const [result] = await db.execute("SELECT * FROM contributors", []);
+        await db.end();
+        const normalizedResults = result.map(item => Object.assign({}, item));
+        // console.log(normalizedResults);
+        return normalizedResults;
+    } catch (error) {
+        console.error(error);
+        return new Error(error);
+    };
+};
+
+
 export const getAllPosts = async () => {
     try {
         const db = await mysql.createConnection({

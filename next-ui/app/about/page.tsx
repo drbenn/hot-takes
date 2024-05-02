@@ -1,7 +1,7 @@
-export default function Contact() {
+export default function About() {
   return (
     <main  className="w-full text-center">
-        <div>Contact</div>
+        <div>About</div>
     </main>
   )
 }
