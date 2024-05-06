@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Connection, QueryResult } from 'mysql2';
 import { Query } from 'mysql2/typings/mysql/lib/protocol/sequences/Query';
 import { InjectClient } from 'nest-mysql';
 import { ContributorForPrompting } from 'src/app.models';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 @Injectable()
 export class DbService {
 
   constructor(
-    @InjectClient() private readonly connection: Connection
+    @InjectClient() private readonly connection: Connection,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
   async insertPost(contributor: ContributorForPrompting, post: string): Promise<any> {
@@ -25,22 +28,31 @@ export class DbService {
     const results = Object.assign([{}], response[0]);
   
     if (results.serverStatus === 2) {
-      console.log(`AI Post Insert Successful for:\n
-      contributor ID: ${contributor.contributor_id}, \n
-      headline: ${contributor.newsStory.title}, \n
-      post: ${post}  \n
+      this.logger.log('info', `Database Response for successful post insert for contributor_id: ${contributor.contributor_id} on ${new Date()}. \n
+      responseResults: ${results} \n
+      post: ${post}
       `)
+      // console.log(`AI Post Insert Successful for:\n
+      // contributor ID: ${contributor.contributor_id}, \n
+      // headline: ${contributor.newsStory.title}, \n
+      // post: ${post}  \n
+      // `)
     } else {
-      console.error(`Error Inserting AI Post! Insert failed for post details:\n
-      contributor ID: ${contributor.contributor_id}, \n
-      headline: ${contributor.newsStory.title}, \n
-      post: ${post}  \n
+      this.logger.error('error', `Error Inserting AI Post! Insert failed for post details:\n
+      // contributor ID: ${contributor.contributor_id}, \n
+      // headline: ${contributor.newsStory.title}, \n
+      // post: ${post}  \n
       `)
-      throw new Error(`Error Inserting AI Post! Insert failed for post details:\n
-        contributor ID: ${contributor.contributor_id}, \n
-        headline: ${contributor.newsStory.title}, \n
-        post: ${post}  \n
-      `) ;
+      // console.error(`Error Inserting AI Post! Insert failed for post details:\n
+      // contributor ID: ${contributor.contributor_id}, \n
+      // headline: ${contributor.newsStory.title}, \n
+      // post: ${post}  \n
+      // `)
+      // throw new Error(`Error Inserting AI Post! Insert failed for post details:\n
+      //   contributor ID: ${contributor.contributor_id}, \n
+      //   headline: ${contributor.newsStory.title}, \n
+      //   post: ${post}  \n
+      // `) ;
     };
   };
 

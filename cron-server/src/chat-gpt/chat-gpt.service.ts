@@ -1,11 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { OpenAI } from 'openai'; 
 import { ContributorForPrompting } from 'src/app.models';
 import { DbService } from 'src/db/db.service';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 @Injectable()
 export class ChatGptService {
-  constructor(private dbService: DbService,) {}
+  constructor(
+    private dbService: DbService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {}
   
   async generateAiPost(contributor: ContributorForPrompting): Promise<void> {
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -24,8 +29,10 @@ export class ChatGptService {
     });
     const response: string = completion.choices[0].message.content;
     const json = JSON.parse(response);
-    console.log(json);
-    
+    // console.log(json);
+    this.logger.log('log', `GPT Response for contributor_id: ${contributor.contributor_id} on ${new Date()}. \n
+    response: ${response}
+    `)
     const post: string = json["post"];
 
     // response may include single/double quotes or backticks so must escape those first.

@@ -8,14 +8,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatGptService = void 0;
 const common_1 = require("@nestjs/common");
 const openai_1 = require("openai");
 const db_service_1 = require("../db/db.service");
+const nest_winston_1 = require("nest-winston");
+const winston_1 = require("winston");
 let ChatGptService = class ChatGptService {
-    constructor(dbService) {
+    constructor(dbService, logger) {
         this.dbService = dbService;
+        this.logger = logger;
     }
     async generateAiPost(contributor) {
         var _a, _b;
@@ -33,7 +39,9 @@ let ChatGptService = class ChatGptService {
         });
         const response = completion.choices[0].message.content;
         const json = JSON.parse(response);
-        console.log(json);
+        this.logger.log('log', `GPT Response for contributor_id: ${contributor.contributor_id} on ${new Date()}. \n
+    response: ${response}
+    `);
         const post = json["post"];
         const escapedPost = post.replace(/['"`]/g, '\\$&');
         this.dbService.insertPost(contributor, escapedPost);
@@ -43,6 +51,8 @@ let ChatGptService = class ChatGptService {
 exports.ChatGptService = ChatGptService;
 exports.ChatGptService = ChatGptService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [db_service_1.DbService])
+    __param(1, (0, common_1.Inject)(nest_winston_1.WINSTON_MODULE_PROVIDER)),
+    __metadata("design:paramtypes", [db_service_1.DbService,
+        winston_1.Logger])
 ], ChatGptService);
 //# sourceMappingURL=chat-gpt.service.js.map

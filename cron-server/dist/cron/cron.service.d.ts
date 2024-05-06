@@ -1,7 +1,7 @@
 import { WorkflowService } from 'src/workflow/workflow.service';
+import { Logger } from 'winston';
 export declare class CronService {
     private workflowService;
-    constructor(workflowService: WorkflowService);
-    cron8am(): void;
-    cron8pm(): void;
+    private readonly logger;
+    constructor(workflowService: WorkflowService, logger: Logger);
 }

@@ -15,9 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DbService = void 0;
 const common_1 = require("@nestjs/common");
 const nest_mysql_1 = require("nest-mysql");
+const nest_winston_1 = require("nest-winston");
+const winston_1 = require("winston");
 let DbService = class DbService {
-    constructor(connection) {
+    constructor(connection, logger) {
         this.connection = connection;
+        this.logger = logger;
     }
     async insertPost(contributor, post) {
         const sqlQuery = `INSERT INTO ai_posts (contributor_id, headline, content_snippet, link, post) 
@@ -31,22 +34,16 @@ let DbService = class DbService {
         const response = await this.connection.query(sqlQuery);
         const results = Object.assign([{}], response[0]);
         if (results.serverStatus === 2) {
-            console.log(`AI Post Insert Successful for:\n
-      contributor ID: ${contributor.contributor_id}, \n
-      headline: ${contributor.newsStory.title}, \n
-      post: ${post}  \n
+            this.logger.log('info', `Database Response for successful post insert for contributor_id: ${contributor.contributor_id} on ${new Date()}. \n
+      responseResults: ${results} \n
+      post: ${post}
       `);
         }
         else {
-            console.error(`Error Inserting AI Post! Insert failed for post details:\n
-      contributor ID: ${contributor.contributor_id}, \n
-      headline: ${contributor.newsStory.title}, \n
-      post: ${post}  \n
-      `);
-            throw new Error(`Error Inserting AI Post! Insert failed for post details:\n
-        contributor ID: ${contributor.contributor_id}, \n
-        headline: ${contributor.newsStory.title}, \n
-        post: ${post}  \n
+            this.logger.error('error', `Error Inserting AI Post! Insert failed for post details:\n
+      // contributor ID: ${contributor.contributor_id}, \n
+      // headline: ${contributor.newsStory.title}, \n
+      // post: ${post}  \n
       `);
         }
         ;
@@ -70,6 +67,7 @@ exports.DbService = DbService;
 exports.DbService = DbService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nest_mysql_1.InjectClient)()),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, common_1.Inject)(nest_winston_1.WINSTON_MODULE_PROVIDER)),
+    __metadata("design:paramtypes", [Object, winston_1.Logger])
 ], DbService);
 //# sourceMappingURL=db.service.js.map

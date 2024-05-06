@@ -16,7 +16,11 @@ export class HeadlineScrapeService {
       // set feed to pull from
       const selectedFeed = mostpopularFeed;
 
-      const newsStories: NewsStory[] = selectedFeed.items.map(item => {
+      // or use a random feed
+      const feedArray = [usFeed, worldFeed, mostpopularFeed];
+      const randomIndex: number = Math.floor(Math.random() * feedArray.length);
+
+      const newsStories: NewsStory[] = feedArray[randomIndex].items.map(item => {
         const newsStory: NewsStory = {
           title: item.title,
           contentSnippet: item.contentSnippet,

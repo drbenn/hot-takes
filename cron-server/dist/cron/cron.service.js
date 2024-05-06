@@ -8,44 +8,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CronService = void 0;
 const common_1 = require("@nestjs/common");
-const schedule_1 = require("@nestjs/schedule");
+const nest_winston_1 = require("nest-winston");
 const workflow_service_1 = require("../workflow/workflow.service");
+const winston_1 = require("winston");
 let CronService = class CronService {
-    constructor(workflowService) {
+    constructor(workflowService, logger) {
         this.workflowService = workflowService;
+        this.logger = logger;
     }
-    cron8am() {
-        this.workflowService.workflowActive();
-    }
-    ;
-    cron8pm() {
-        this.workflowService.workflowActive();
-    }
-    ;
 };
 exports.CronService = CronService;
-__decorate([
-    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_30_SECONDS),
-    (0, schedule_1.Cron)('0 8 * * *', {
-        timeZone: 'America/New_York',
-    }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], CronService.prototype, "cron8am", null);
-__decorate([
-    (0, schedule_1.Cron)('0 18 * * *', {
-        timeZone: 'America/New_York',
-    }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], CronService.prototype, "cron8pm", null);
 exports.CronService = CronService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [workflow_service_1.WorkflowService])
+    __param(1, (0, common_1.Inject)(nest_winston_1.WINSTON_MODULE_PROVIDER)),
+    __metadata("design:paramtypes", [workflow_service_1.WorkflowService,
+        winston_1.Logger])
 ], CronService);
 //# sourceMappingURL=cron.service.js.map

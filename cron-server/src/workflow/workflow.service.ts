@@ -1,24 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ContributorForPrompting, NewsStory } from 'src/app.models';
 import { ChatGptService } from 'src/chat-gpt/chat-gpt.service';
 import { DbService } from 'src/db/db.service';
 import { HeadlineScrapeService } from 'src/headline-scrape/headline-scrape.service';
+import { Logger } from 'winston';
+
 
 @Injectable()
 export class WorkflowService {
-  private maxPostDelayHours: number = 4; // Number of hours the posting cycle should conclude in 
+  
 
   constructor(
     private dbService: DbService,
     private headlineService: HeadlineScrapeService,
-    private gptService: ChatGptService
+    private gptService: ChatGptService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
-  async workflowActive() {
-    console.log('WorkFlow Touched!');
-    this.aiPostWorkFlow();
-  };
+  // async workflowActive() {
+  //   // console.log('WorkFlow Touched!');
+  //   // this.aiPostWorkFlow();
+  //   // this.logger.log('BOOYAH')
+  //   // this.logger.error("ERRONEOUS")
+  // };
 
-  async aiPostWorkFlow() {
+  async aiPostWorkFlow(maxPostDelayHours: number) {
     // 1. Get listing of contributors from db
     const contributors: ContributorForPrompting[] = await this.dbService.getAllContributors();
     // contributors.pop();
@@ -30,16 +36,26 @@ export class WorkflowService {
     // console.log(shuffledContributors);
 
     // 3. Generate a post delay for each and between each contributor
-    const delayedShuffledContributors: ContributorForPrompting[] = this.addDelayForContributorPosting(shuffledContributors);
+    const delayedShuffledContributors: ContributorForPrompting[] = this.addDelayForContributorPosting(shuffledContributors, maxPostDelayHours);
     // console.log(delayedShuffledContributors);
+    let delayedText: string = '';
+    delayedShuffledContributors.forEach((cont: ContributorForPrompting) => delayedText += `id: ${cont.contributor_id} | delay: ${cont.ms_post_delay}`)
+    this.logger.log('info',`delayedShuffledContributors:  ${delayedText}`);
 
     // 4. Get listing of current news headlines from RSS feed
     const headlines: NewsStory[] = await this.headlineService.getLatestHeadlines();
     // console.log(headlines);
+    let headlineTitles: string = '';
+    headlines.forEach((headline: NewsStory) => headlineTitles += headline.title + ',')
+    this.logger.log('info',`headlines:  ${headlineTitles}`);
     
     // 5. Assign news headline to each contributor
     const contributorsPromptData: ContributorForPrompting[] = this.assignNewsStoryToContributors(headlines, delayedShuffledContributors);
-    // console.log(contributorsPromptData);
+    console.log(contributorsPromptData);
+    console.log(contributorsPromptData);
+    let contributorsPromptDataLog: string = '';
+    contributorsPromptData.forEach((contributor: ContributorForPrompting) => contributorsPromptDataLog += 'id: ' + contributor.contributor_id + ', story: ' + contributor.newsStory.title + 'delay(ms): ' + contributor.ms_post_delay + '  |  ')
+    this.logger.log('info',`contributorsPromptData:  ${contributorsPromptDataLog}`);
     
     // 6. Iterate through contributors, for each contributor
       // a. submit appropriate prompt to chatgpt
@@ -55,6 +71,7 @@ export class WorkflowService {
         // insert gpt response into db
         this.gptService.generateAiPost(contributor);      
       }, contributor.ms_post_delay )
+      // this.gptService.generateAiPost(contributor);     
     });
   }
 
@@ -84,8 +101,8 @@ export class WorkflowService {
    * @param contributors an array of shuffled contributors 'id' and 'gpt_prompt'.
    * @returns shuffled contributors as ContributorForPrompting[] now also including the optional property of 'ms_post_delay'.
    */
-  private addDelayForContributorPosting(contributors: ContributorForPrompting[]): ContributorForPrompting[] {
-    const maxPostCycleDelay: number = this.maxPostDelayHours * 3600000; // X hours in ms, 1min = 60000ms, in ms 1hr = 3600000ms
+  private addDelayForContributorPosting(contributors: ContributorForPrompting[], maxPostDelayHours: number): ContributorForPrompting[] {
+    const maxPostCycleDelay: number = maxPostDelayHours * 3600000; // X hours in ms, 1min = 60000ms, in ms 1hr = 3600000ms
     const delayedContributors: ContributorForPrompting[] = contributors.map((contributor: ContributorForPrompting) => {
       const delay: number = Math.floor(maxPostCycleDelay * Math.random());
       return {

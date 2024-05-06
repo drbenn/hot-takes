@@ -6,6 +6,21 @@ import { MysqlModule } from 'nest-mysql';
 import { CronModule } from './cron/cron.module';
 import { DbModule } from './db/db.module';
 import { DbService } from './db/db.service';
+// import { WinstonModule } from 'nest-winston';
+// import { LoggerService } from './logger.service';
+// import * as winston from 'winston';
+import { WorkflowModule } from './workflow/workflow.module';
+import { WorkflowService } from './workflow/workflow.service';
+import {
+  utilities as nestWinstonModuleUtilities,
+  WinstonModule,
+} from 'nest-winston';
+import * as winston from 'winston';
+import { HeadlineScrapeModule } from './headline-scrape/headline-scrape.module';
+import { HeadlineScrapeService } from './headline-scrape/headline-scrape.service';
+import { ChatGptModule } from './chat-gpt/chat-gpt.module';
+import { ChatGptService } from './chat-gpt/chat-gpt.service';
+import { CronService } from './cron/cron.service';
 
 
 @Module({
@@ -18,11 +33,32 @@ import { DbService } from './db/db.service';
       user: process.env.DATABASE_USER,
       port: parseInt(process.env.DATABASE_PORT),      
     }),
+    WinstonModule.forRootAsync({
+      useFactory: () => ({
+        transports: [
+          new winston.transports.Console({
+            format: winston.format.combine(
+              winston.format.timestamp(),
+              nestWinstonModuleUtilities.format.nestLike(),
+            ),
+          }),
+          new winston.transports.File({
+            filename: 'logs/error.log',
+            level: 'error',
+          }),
+          new winston.transports.File({ filename: 'logs/combined.log' }),
+        ],
+      })
+    }),
     CronModule,
-    DbModule
+    DbModule,
+    WorkflowModule,
+    HeadlineScrapeModule,
+    ChatGptModule
   ],
   controllers: [AppController], // can remove AppController, this is only for CRUD which server will not have(other than for testing)
   // controllers: [],
-  providers: [AppService, DbService],
+  providers: [AppService, DbService, WorkflowService, HeadlineScrapeService, ChatGptService, CronService],
+  exports: []
 })
 export class AppModule {}

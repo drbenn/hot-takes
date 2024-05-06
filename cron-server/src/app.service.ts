@@ -1,22 +1,23 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, OnModuleInit } from '@nestjs/common';
-// import { ChatGptService } from './chat-gpt/chat-gpt.service';
-// import { CronService } from './cron/cron.service';
-// import { HeadlineScrapeService } from './headline-scrape/headline-scrape.service';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DbService } from './db/db.service';
-import { ContributorForPrompting } from './app.models';
-// import { NewsStory } from './app.models';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { WorkflowService } from './workflow/workflow.service';
 
 @Injectable()
 export class AppService implements OnModuleInit {
 
   constructor(
-    // private cronService: CronService,
-    // private headlineService: HeadlineScrapeService,
     private dbService: DbService,
-    // private chatGptService: ChatGptService,
+    private workflowService: WorkflowService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
+  onModuleInit() {
+    this.logger.log('info',`Application Initialized:  ${new Date()}`);
+
+  };
 
   getHello(): string {
     return 'Hello World! Hot Takes Cron Server is running!';
@@ -27,18 +28,23 @@ export class AppService implements OnModuleInit {
     return contributors;
   }
 
-  onModuleInit() {
-    console.log('Function executed on server start!');
-    // this.dbService.insertPost({
-    //   contributor_id: 1,
-    //   headline: 'Something hassened 1',
-    //   content_snippet: 'snippet',
-    //   link: 'https://junk.com',
-    //   post: 'this happened 1'
-    // })
-    // this.headlineService.getLatestHeadlines();
-
-    // this.chatGptService.generateAiPost();
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  cron10seconds() {
+    this.logger.log('info',`Cron every 10 seconds in APP SERVICE:  ${new Date()}`);
   };
+
+  // @Cron(CronExpression.EVERY_MINUTE)
+  // cron1min() {
+  //   this.logger.log('info',`Cron every 1 min in APP SERVICE:  ${new Date()}`);
+  // };
+
+  // @Cron(CronExpression.EVERY_5_MINUTES)
+  // cron5minutes() {
+  //   this.logger.log('info',`Cron job  every 5 min executed:  ${new Date()}`);
+  //   const maxPostDelayHours: number = 1/12; // Number of hours the posting cycle should conclude in 
+  //   this.workflowService.aiPostWorkFlow(maxPostDelayHours);
+  // };
+
+
 
 };

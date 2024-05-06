@@ -26,13 +26,16 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/schedule": "^4.0.2",
+    "@types/winston": "^2.4.4",
     "axios": "^1.6.8",
     "mysql2": "^3.9.7",
     "nest-mysql": "^0.0.14",
+    "nest-winston": "^1.9.4",
     "openai": "^4.38.2",
     "reflect-metadata": "^0.1.13",
     "rss-parser": "^3.13.0",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

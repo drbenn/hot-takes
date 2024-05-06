@@ -17,7 +17,9 @@ let HeadlineScrapeService = class HeadlineScrapeService {
             const worldFeed = await parser.parseURL('https://rss.nytimes.com/services/xml/rss/nyt/World.xml');
             const mostpopularFeed = await parser.parseURL('https://rss.nytimes.com/services/xml/rss/nyt/MostViewed.xml');
             const selectedFeed = mostpopularFeed;
-            const newsStories = selectedFeed.items.map(item => {
+            const feedArray = [usFeed, worldFeed, mostpopularFeed];
+            const randomIndex = Math.floor(Math.random() * feedArray.length);
+            const newsStories = feedArray[randomIndex].items.map(item => {
                 const newsStory = {
                     title: item.title,
                     contentSnippet: item.contentSnippet,
