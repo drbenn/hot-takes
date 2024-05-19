@@ -13,15 +13,19 @@ export class CronService {
   ){}
   /**
    * NOTE: CronService does not need to be called in appService, or elsewhere.
-   * Will run automatically.
+   * Will run automatically. 
+   * 
+   * HOWEVER, this is only feature complete in development.
+   * A dedicated server is required in production, therefore, when deployed on 
+   * Namecheap(Shared Hosting) cPanel cron jobs are required with small PHP
+   * scripts. And this module becomes useless.
+   * 
+   * The current solution using cPanel PHP cron jobs hits the 'xit' GET route
+   * from the app.controller 12 hours apart around around 8am and 8pm eastern time.
    */
-  // @Cron(CronExpression.EVERY_10_SECONDS)
-  // cron10seconds() {
-  //   this.logger.log('info',`Cron every 10 seconds in CRON SERVICE:  ${new Date()}`);
-  // };
+
   // @Cron(CronExpression.EVERY_10_MINUTES)
   // cron30seconds() {
-  //   // Your business logic here
   //   // console.log('Cron task executed every 30 sec');
   //   // console.log(new Date());
   //   this.logger.log('info',`Cron job executed:  ${new Date()}`);
@@ -30,13 +34,7 @@ export class CronService {
   //   // `)
   //   this.workflowService.aiPostWorkFlow();
   // };
-  // @Cron(CronExpression.EVERY_10_MINUTES)
-  // cron10min() {
-  //     // Your business logic here
-  //     console.log('Cron task executed every 10 min');
-  //     // console.log(new Date());
-  //     this.workflowService.workflowActive();
-  // };
+
   
   // @Cron('0 8 * * *', {
   //     timeZone: 'America/New_York',
@@ -63,38 +61,5 @@ export class CronService {
   //     // console.log('=================================================');
   //     this.workflowService.workflowActive();
   // };
-  // @Cron('32 17 * * *', {
-  //     timeZone: 'America/New_York',
-  //     })
-  //     handleCron3() {
-  //     // Wait for 25 seconds before executing the task
-  //     setTimeout(() => {
-  //         console.log('Cron job executed at 5:32:25 PM Eastern Time');
-  //         // Your scheduled task logic here
-  //     }, 25000);
-  //     }
-  //   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  //   handleCron() {
-  //     // Your business logic here
-  //     console.log('Cron task executed at midnight');
-  //   }
-  //   @Cron(CronExpression.EVERY_30_SECONDS)
-  //   handleCron2() {
-  //     // Your business logic here
-  //     console.log('Cron task executed every 30 sec');
-  //     console.log(new Date());
-  //   }
-  //   @Cron('0 8 * * *', {
-  //     timeZone: 'America/New_York',
-  //   })
-  //   handleCronMorning() {
-  //     console.log('Cron job executed at 8:00 AM Eastern Time');
-  //   }
-  
-  //   @Cron('0 12 * * *', {
-  //     timeZone: 'America/New_York',
-  //   })
-  //   handleCronNoon() {
-  //     console.log('Cron job executed at 12:00 PM Eastern Time');
-  //   }
+
 }

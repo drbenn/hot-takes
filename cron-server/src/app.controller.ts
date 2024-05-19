@@ -25,7 +25,7 @@ export class AppController {
   @Get('xit')
   async newPosts() {
     this.logger.log('info',`xit newPosts Hit!:  ${new Date()}`);
-    const maxPostDelayHours: number = 1/12; // Number of hours the posting cycle should conclude in 
+    const maxPostDelayHours: number = 3/2; // Number of hours the posting cycle should conclude in 
     this.workflowService.aiPostWorkFlow(maxPostDelayHours);
   }
 }

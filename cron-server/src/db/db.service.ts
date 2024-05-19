@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Connection, QueryResult } from 'mysql2';
+import { Connection } from 'mysql2';
 import { Query } from 'mysql2/typings/mysql/lib/protocol/sequences/Query';
 import { InjectClient } from 'nest-mysql';
 import { ContributorForPrompting } from 'src/app.models';
@@ -15,7 +15,6 @@ export class DbService {
   ) {}
 
   async insertPost(contributor: ContributorForPrompting, post: string): Promise<any> {
-    
     const sqlQuery: string = `INSERT INTO ai_posts (contributor_id, headline, content_snippet, link, post) 
       VALUES (
         \'${contributor.contributor_id}\',
@@ -32,27 +31,12 @@ export class DbService {
       responseResults: ${results} \n
       post: ${post}
       `)
-      // console.log(`AI Post Insert Successful for:\n
-      // contributor ID: ${contributor.contributor_id}, \n
-      // headline: ${contributor.newsStory.title}, \n
-      // post: ${post}  \n
-      // `)
     } else {
       this.logger.error('error', `Error Inserting AI Post! Insert failed for post details:\n
       // contributor ID: ${contributor.contributor_id}, \n
       // headline: ${contributor.newsStory.title}, \n
       // post: ${post}  \n
       `)
-      // console.error(`Error Inserting AI Post! Insert failed for post details:\n
-      // contributor ID: ${contributor.contributor_id}, \n
-      // headline: ${contributor.newsStory.title}, \n
-      // post: ${post}  \n
-      // `)
-      // throw new Error(`Error Inserting AI Post! Insert failed for post details:\n
-      //   contributor ID: ${contributor.contributor_id}, \n
-      //   headline: ${contributor.newsStory.title}, \n
-      //   post: ${post}  \n
-      // `) ;
     };
   };
 

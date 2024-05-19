@@ -29,7 +29,6 @@ export class ChatGptService {
     });
     const response: string = completion.choices[0].message.content;
     const json = JSON.parse(response);
-    // console.log(json);
     this.logger.log('log', `GPT Response for contributor_id: ${contributor.contributor_id} on ${new Date()}. \n
     response: ${response}
     `)

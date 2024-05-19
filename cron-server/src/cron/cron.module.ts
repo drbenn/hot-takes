@@ -12,7 +12,7 @@ import { HeadlineScrapeService } from 'src/headline-scrape/headline-scrape.servi
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(), // forFeature() or forRoot()?
+    ScheduleModule.forRoot(),
     WorkflowModule,
     DbModule,
     HeadlineScrapeModule,

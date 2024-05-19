@@ -6,10 +6,8 @@ import { DbService } from 'src/db/db.service';
 import { HeadlineScrapeService } from 'src/headline-scrape/headline-scrape.service';
 import { Logger } from 'winston';
 
-
 @Injectable()
 export class WorkflowService {
-  
 
   constructor(
     private dbService: DbService,
@@ -17,42 +15,28 @@ export class WorkflowService {
     private gptService: ChatGptService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
-  // async workflowActive() {
-  //   // console.log('WorkFlow Touched!');
-  //   // this.aiPostWorkFlow();
-  //   // this.logger.log('BOOYAH')
-  //   // this.logger.error("ERRONEOUS")
-  // };
 
   async aiPostWorkFlow(maxPostDelayHours: number) {
     // 1. Get listing of contributors from db
     const contributors: ContributorForPrompting[] = await this.dbService.getAllContributors();
-    // contributors.pop();
-    // contributors.pop();
-    // console.log(contributors);
 
     // 2. Shuffle contributors for randomized posting order
     const shuffledContributors: ContributorForPrompting[] = this.shuffleContributors(contributors);
-    // console.log(shuffledContributors);
 
     // 3. Generate a post delay for each and between each contributor
     const delayedShuffledContributors: ContributorForPrompting[] = this.addDelayForContributorPosting(shuffledContributors, maxPostDelayHours);
-    // console.log(delayedShuffledContributors);
     let delayedText: string = '';
     delayedShuffledContributors.forEach((cont: ContributorForPrompting) => delayedText += `id: ${cont.contributor_id} | delay: ${cont.ms_post_delay}`)
     this.logger.log('info',`delayedShuffledContributors:  ${delayedText}`);
 
     // 4. Get listing of current news headlines from RSS feed
     const headlines: NewsStory[] = await this.headlineService.getLatestHeadlines();
-    // console.log(headlines);
     let headlineTitles: string = '';
     headlines.forEach((headline: NewsStory) => headlineTitles += headline.title + ',')
     this.logger.log('info',`headlines:  ${headlineTitles}`);
     
     // 5. Assign news headline to each contributor
     const contributorsPromptData: ContributorForPrompting[] = this.assignNewsStoryToContributors(headlines, delayedShuffledContributors);
-    console.log(contributorsPromptData);
-    console.log(contributorsPromptData);
     let contributorsPromptDataLog: string = '';
     contributorsPromptData.forEach((contributor: ContributorForPrompting) => contributorsPromptDataLog += 'id: ' + contributor.contributor_id + ', story: ' + contributor.newsStory.title + 'delay(ms): ' + contributor.ms_post_delay + '  |  ')
     this.logger.log('info',`contributorsPromptData:  ${contributorsPromptDataLog}`);
@@ -61,17 +45,17 @@ export class WorkflowService {
       // a. submit appropriate prompt to chatgpt
       // b. with successful response from chatgpt insert new post into table ai_posts
       contributorsPromptData.forEach((contributor: ContributorForPrompting) => {
-      // console.log('iterating based on delay...');
       
       // timeouts run concurrently, not in sequence, so no need to divide const maxPostDelayHours by # of contributors
       // also cannot await within the timeout, so calling db insert from within gptService after async quote is received.
       setTimeout(() => {
-        // console.log(contributor);
         // transmit and await response from chatgpt
-        // insert gpt response into db
+
+        // insert gpt response into db within gptService. Alhough setTimeout should be asynchronous, was having issues assigning
+        // value from asynchronous, so as quick workaround just inserting to database within gptService insertPost instead of
+        // within workflowService.
         this.gptService.generateAiPost(contributor);      
-      }, contributor.ms_post_delay )
-      // this.gptService.generateAiPost(contributor);     
+      }, contributor.ms_post_delay ) 
     });
   }
 
@@ -132,6 +116,5 @@ export class WorkflowService {
     })
     return assignedHeadlines;
   };
-
 
 }

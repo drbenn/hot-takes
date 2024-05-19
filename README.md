@@ -34,11 +34,14 @@ mysqldump -u root -ppass hot_takes > mysql-hot-takes-dump.sql
 
 ## NestJS Namecheap deployment
 
-
-### Versioning issues
-- Namecheap latest version of Node is 14.21.2, NestJS current latest version 10, requires Node >= 16, so must use NestJS version 9 or below.
-- bcrypt requires a C dependency, _GLIBC_2.14_, which Namecheap does not support. Must use library bcryptjs as it is written completely in JavaScript and supported by Namecheap in production.
-
 ### stackoverflow post with full directions
 
 - [stackoverflow post](https://stackoverflow.com/questions/77768040/deploy-nestjs-server-api-in-namecheap-cpanel)
+
+### Versioning issues
+- Namecheap latest version of Node is 14.21.2, NestJS current latest version 10, requires Node >= 16, so must use NestJS version 9 or below.
+
+### Nestjs/schedule CRON service only in development
+- A dedicated server is required in production for NestJS/schedule cron jpbs to run, therefore, when deployed on Namecheap(Shared Hosting) the NestJs library is useless, and cron jobs are required with small PHP scripts through cPanel. And this Cron module/service becomes useless.
+
+- The current solution using cPanel PHP cron jobs hits the 'xit' GET route from the app.controller 12 hours apart around around 8am and 8pm eastern time.

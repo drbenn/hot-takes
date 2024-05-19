@@ -6,9 +6,6 @@ import { MysqlModule } from 'nest-mysql';
 import { CronModule } from './cron/cron.module';
 import { DbModule } from './db/db.module';
 import { DbService } from './db/db.service';
-// import { WinstonModule } from 'nest-winston';
-// import { LoggerService } from './logger.service';
-// import * as winston from 'winston';
 import { WorkflowModule } from './workflow/workflow.module';
 import { WorkflowService } from './workflow/workflow.service';
 import {
@@ -56,8 +53,7 @@ import { CronService } from './cron/cron.service';
     HeadlineScrapeModule,
     ChatGptModule
   ],
-  controllers: [AppController], // can remove AppController, this is only for CRUD which server will not have(other than for testing)
-  // controllers: [],
+  controllers: [AppController],
   providers: [AppService, DbService, WorkflowService, HeadlineScrapeService, ChatGptService, CronService],
   exports: []
 })
