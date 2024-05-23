@@ -1,4 +1,5 @@
 "use server";
+
 import { revalidatePath } from "next/cache";
 import mysql from 'mysql2/promise';
 
@@ -25,7 +26,7 @@ export const getAllContributors = async () => {
             connectionLimit: 10,
             queueLimit: 0
           });
-        const [result] = await db.execute("SELECT * FROM contributors", []);
+        const [result] = await db.execute("SELECT id, name, profile_img_url, biography FROM contributors", []);
         await db.end();
         const normalizedResults = result.map(item => Object.assign({}, item));
         // console.log(normalizedResults);
@@ -35,6 +36,118 @@ export const getAllContributors = async () => {
         return new Error(error);
     };
 };
+
+export const getAllAiPosts = async () => {
+    try {
+        const db = await mysql.createConnection({
+            host: 'localhost',
+            port: '3306',
+            user: 'root',  // Replace with your MySQL username
+            password: 'pass',  // Replace with your MySQL password
+            database: 'hot_takes',  // Replace with your database name
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+          });
+        const [result] = await db.execute("SELECT * FROM ai_posts", []);
+        await db.end();
+        const normalizedResults = result.map(item => Object.assign({}, item));
+        const profileImages = await getContributorImages();
+        const resultsWithImage = normalizedResults.map(item => {
+            return {
+                ...item,
+                profile_img_url: profileImages[item.contributor_id]
+            }
+        })
+        return resultsWithImage;
+    } catch (error) {
+        console.error(error);
+        return new Error(error);
+    };
+};
+
+export const getLatest10AiPosts = async () => {
+    try {
+        const db = await mysql.createConnection({
+            host: 'localhost',
+            port: '3306',
+            user: 'root',  // Replace with your MySQL username
+            password: 'pass',  // Replace with your MySQL password
+            database: 'hot_takes',  // Replace with your database name
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+          });
+        const [result] = await db.execute("SELECT * FROM ai_posts ORDER BY create_date DESC LIMIT 5, 5", []);
+        await db.end();
+        const normalizedResults = result.map(item => Object.assign({}, item));
+        const profileImages = await getContributorImages();
+        const resultsWithImage = normalizedResults.map(item => {
+            return {
+                ...item,
+                profile_img_url: profileImages[item.contributor_id]
+            }
+        })
+        return resultsWithImage;
+    } catch (error) {
+        console.error(error);
+        return new Error(error);
+    };
+};
+
+export const getNextLatest10AiPosts = async (skipAmount) => {
+    try {
+        const db = await mysql.createConnection({
+            host: 'localhost',
+            port: '3306',
+            user: 'root',  // Replace with your MySQL username
+            password: 'pass',  // Replace with your MySQL password
+            database: 'hot_takes',  // Replace with your database name
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+          });
+        const [result] = await db.execute(`SELECT * FROM ai_posts ORDER BY create_date DESC LIMIT ${skipAmount}, 10`, []);
+        await db.end();
+        const normalizedResults = result.map(item => Object.assign({}, item));
+        const profileImages = await getContributorImages();
+        const resultsWithImage = normalizedResults.map(item => {
+            return {
+                ...item,
+                profile_img_url: profileImages[item.contributor_id]
+            }
+        })
+        return resultsWithImage;
+    } catch (error) {
+        console.error(error);
+        return new Error(error);
+    };
+};
+
+export const getContributorImages = async () => {
+    try {
+        const db = await mysql.createConnection({
+            host: 'localhost',
+            port: '3306',
+            user: 'root',  // Replace with your MySQL username
+            password: 'pass',  // Replace with your MySQL password
+            database: 'hot_takes',  // Replace with your database name
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+          });
+        const [result] = await db.execute("SELECT id, profile_img_url FROM contributors", []);
+        await db.end();
+        const normalizedResults = result.map(item => Object.assign({}, item));
+        const imageUrlObject = {};
+        normalizedResults.forEach(item => imageUrlObject[item.id] = item.profile_img_url);
+        return imageUrlObject;
+    } catch (error) {
+        console.error(error);
+        return new Error(error);
+    };
+};
+
 
 
 export const getAllPosts = async () => {

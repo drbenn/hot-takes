@@ -1,21 +1,24 @@
 ## Basic Setup
 - https://www.youtube.com/watch?v=gfQCNuTMIGs
 
+## Free image hosting instead of building with images
+- www.uploadthing.com
+
 ## Full Nextjs14 feature walkthrough
-https://www.youtube.com/watch?v=vwSlYG7hFk0
+- https://www.youtube.com/watch?v=vwSlYG7hFk0
 
 ## Theo modern setup
 - https://www.youtube.com/watch?v=d5x0JCZbAJs
 
 # api Get/Post
-https://www.youtube.com/watch?v=hpI-d39hUWY
+- https://www.youtube.com/watch?v=hpI-d39hUWY
 
 ## React concepts in 12 min
-https://www.youtube.com/watch?v=wIyHSOugGGw
+- https://www.youtube.com/watch?v=wIyHSOugGGw
 
 ## NextAuth help
-https://www.youtube.com/watch?v=qDRQ2EaWsNM
-https://www.youtube.com/watch?v=Cm6-3pVCPEI
+- https://www.youtube.com/watch?v=qDRQ2EaWsNM
+- https://www.youtube.com/watch?v=Cm6-3pVCPEI
 
 ## Shipfa.st stack
 - Next.js obvi
